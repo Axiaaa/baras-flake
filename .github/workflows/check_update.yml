@@ -34,7 +34,7 @@ jobs:
       - name: Read release info
         id: release
         run: |
-          echo "tag=$(jq -rs '.[0].tag_name' latest.json)"  >> "$GITHUB_OUTPUT"
+          echo "version=$(jq -rs '.[0].version' latest.json)"  >> "$GITHUB_OUTPUT"
           echo "name=$(jq -rs '.[0].name' latest.json)"     >> "$GITHUB_OUTPUT"
           echo "sha=$(jq -rs '.[0].sha256' latest.json)"    >> "$GITHUB_OUTPUT"
 
@@ -43,11 +43,11 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           commit-message: |
-            New baras update dropped: ${{ steps.release.outputs.tag }}
+            New baras update dropped: ${{ steps.release.outputs.version }}
 
             ${{ steps.release.outputs.name }}
             sha256: ${{ steps.release.outputs.sha }}
-          title: "New Baras version ${{ steps.release.outputs.tag }}"
+          title: "New Baras version ${{ steps.release.outputs.version }}"
           body: Update the flake!
-          branch: baras-${{ steps.release.outputs.tag }}
+          branch: baras-${{ steps.release.outputs.version }}
           base: main
