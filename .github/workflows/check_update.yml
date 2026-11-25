@@ -1,0 +1,39 @@
+name: Get latest release version
+on:
+  schedule:
+    - cron:  '0 0 * * *'
+jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.REPO_SCOPED_TOKEN }}
+      - name: Fetch release version
+        run: |
+          curl -sL https://api.github.com/repos/Axiaaa/baras/releases/latest | jq '.tag_name as $tag
+                | .assets[]
+                | select(.name | endswith("AppImage"))
+                | {version: $tag, name, sha256: (.digest | sub("^sha256:"; ""))}' > latest.json
+          //Only amd64 AppImage for now (x86_64-linux only)
+
+      - name: Check for modified files
+        id: git-check
+        run: |
+          if [ $(git status --porcelain | wc -l) -gt 0 ]; then
+            exit 1;
+          fi
+          exit 0
+        continue-on-error: true
+
+      - name: Create Pull Request
+        if: steps.git-check.outcome == 'failure'
+        uses: actions/create-pull-request@v8
+        with:
+          commit-message: |
+              New baras update dropped !
+              ${cat latest.json}
+          title: New Baras version
+          body: Update the flake!
+          branch: ${cat latest.json | jq -r .version}
+          base: main
