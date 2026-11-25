@@ -21,7 +21,6 @@ jobs:
                 | .assets[]
                 | select(.name | endswith("AppImage"))
                 | {version: $tag, name, sha256: (.digest | sub("^sha256:"; ""))}' > latest.json
-          //Only amd64 AppImage for now (x86_64-linux only)
 
       - name: Check for modified files
         id: git-check
