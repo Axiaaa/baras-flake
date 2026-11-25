@@ -1,8 +1,13 @@
 name: Get latest release version
+permissions:
+  contents: write
+  pull-requests: write
+
 on:
   workflow_dispatch
   # schedule:
   #   - cron:  '0 0 * * *'
+  #
 jobs:
   get-version:
     runs-on: ubuntu-latest
@@ -27,14 +32,23 @@ jobs:
           exit 0
         continue-on-error: true
 
+      - name: Read release info
+        id: release
+        run: |
+          echo "tag=$(jq -rs '.[0].tag_name' latest.json)"  >> "$GITHUB_OUTPUT"
+          echo "name=$(jq -rs '.[0].name' latest.json)"     >> "$GITHUB_OUTPUT"
+          echo "sha=$(jq -rs '.[0].sha256' latest.json)"    >> "$GITHUB_OUTPUT"
+
       - name: Create Pull Request
         if: steps.git-check.outcome == 'failure'
-        uses: actions/create-pull-request@v8
+        uses: peter-evans/create-pull-request@v7
         with:
           commit-message: |
-              New baras update dropped !
-              ${cat latest.json}
-          title: New Baras version
+            New baras update dropped: ${{ steps.release.outputs.tag }}
+
+            ${{ steps.release.outputs.name }}
+            sha256: ${{ steps.release.outputs.sha }}
+          title: "New Baras version ${{ steps.release.outputs.tag }}"
           body: Update the flake!
-          branch: ${cat latest.json | jq -r .version}
+          branch: baras-${{ steps.release.outputs.tag }}
           base: main
