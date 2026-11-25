@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          token: ${{ secrets.REPO_SCOPED_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Fetch release version
         run: |
           curl -sL https://api.github.com/repos/Axiaaa/baras/releases/latest | jq '.tag_name as $tag
