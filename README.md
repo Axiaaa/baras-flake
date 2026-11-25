@@ -13,7 +13,7 @@ inputs = {
 
 Then add the following in `environment.systemPackages` from your `configuration.nix` : 
 ```nix
-inputs.baras.packages.${pkgs.stdenv.hostPlatform.system}.
+inputs.baras.packages.${pkgs.stdenv.hostPlatform.system}.default
 ```
 
 Tested and working on NixOs (x86_64-linux) with Niri & Noctalia.
