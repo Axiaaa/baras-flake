@@ -5,12 +5,12 @@
 }:
 
 let
-  version = "2026.11.23";
+  version = "2026.11.24";
   pname = "baras";
 
   src = fetchurl {
     url = "https://github.com/baras-app/${pname}/releases/download/v${version}/BARAS_${version}_amd64.AppImage";
-    hash = "sha256:sha256-MWicFCcdsbETmn8sFz6D+2YPxNIx5+xe5BtHGJao6Ng=";
+    hash = "sha256:e8f4aaf926e6f3f2c67ba3dd9c3be6ac9b0961c48691a307c203d31bc7c6a31a";
   };
 
 in
