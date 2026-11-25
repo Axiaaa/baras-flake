@@ -17,7 +17,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Fetch release version
         run: |
-          curl -sL https://api.github.com/repos/Axiaaa/baras/releases/latest | jq '.tag_name as $tag
+          curl -sL https://api.github.com/repos/baras-app/baras/releases/latest | jq '.tag_name as $tag
                 | .assets[]
                 | select(.name | endswith("AppImage"))
                 | {version: $tag, name, sha256: (.digest | sub("^sha256:"; ""))}' > latest.json
